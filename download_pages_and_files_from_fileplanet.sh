@@ -1,7 +1,14 @@
 #!/bin/bash
 
-# downloads files from fileplanet by numeric ID
+# downloads files from fileplanet by a span of numeric IDs
 
+# USAGE:
+# $ bash download_pages_and_files_from_fileplanet.sh 1 123
+# would try to download all files and their download pages
+# with the IDs 1 to 123
+# Files will be downloaded to ./www.fileplanet.com/NUMERICID/download/
+
+# Random thoughts:
 # we can go with http://www.fileplanet.com/NUMERICID/download/
 # For the numeric ID we can use both 012345 OR 12345 formats
 # We will be using the one without the leading zeros, since that is how Fileplanet links internally.
