@@ -14,12 +14,11 @@
 # We will be using the one without the leading zeros, since that is how Fileplanet links internally.
 
 echo "You will be downloading $1 to $2, you rock!"
-echo "The lines 'grep: www.fileplanet.com/ID/download/index.html: No such file or directory' simply mean there was not file for the ID, everything is fine."
 echo "Let's go!"
 
 for i in $(seq $1 $2)
 do
-	echo "Downloading $i"
+	echo "Trying to download $i"
 	
 	# fileplanet returns a "302 Found" for non-existing IDs
 	# redirecting to "Location: /error/error.shtml?aspxerrorpath=/autodownload.aspx 
@@ -27,14 +26,14 @@ do
 	wget -nv -a pages_$1_$2.log --force-directories --max-redirect=0 http://www.fileplanet.com/${i}/download/
 	
 	# extract the session download link to the actual file we want
-	linktowget=$(grep default-file-download-link www.fileplanet.com/${i}/download/index.html | grep -Eo "http.*'" | sed "s/'//")
+	linktowget=$(grep default-file-download-link www.fileplanet.com/${i}/download/index.html 2>/dev/null | grep -Eo "http.*'" | sed "s/'//")
 	
-	if [ -n "${linktowget+x}" ]; then
-		# download the file to the same directory as its download page HTML
-		echo "Download link found, downloading..."
-		wget -nv -a files_$1_$2.log --directory-prefix=www.fileplanet.com/${i}/download/ "${linktowget}"
-	else
+	if [ ! -n "${linktowget}" ]; then
 		echo "No download link found."
+	else
+		echo "Download link found, downloading ${linktowget}"
+		# download the file to the same directory as its download page HTML
+		wget -nv -a files_$1_$2.log --directory-prefix=www.fileplanet.com/${i}/download/ "${linktowget}"
 	fi
 	echo "-----"
 done
