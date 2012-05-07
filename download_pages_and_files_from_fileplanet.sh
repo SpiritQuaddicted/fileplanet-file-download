@@ -26,7 +26,8 @@ do
 	wget -nv -a pages_$1_$2.log --force-directories --max-redirect=0 http://www.fileplanet.com/${i}/download/
 	
 	# extract the session download link to the actual file we want
-	linktowget=$(grep default-file-download-link www.fileplanet.com/${i}/download/index.html 2>/dev/null | grep -Eo "http.*'" | sed "s/'//")
+	# the URL is enclosed by single quotes. The second grep will get everything from http until the last '. The rev/cut will remove the trailing '.  
+	linktowget=$(grep default-file-download-link www.fileplanet.com/${i}/download/index.html 2>/dev/null | grep -Eo "http.*'" | rev | cut -c 2- | rev)
 	
 	if [ ! -n "${linktowget}" ]; then
 		echo "No download link found."
