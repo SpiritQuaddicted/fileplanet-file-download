@@ -29,8 +29,13 @@ do
 	# extract the session download link to the actual file we want
 	linktowget=$(grep default-file-download-link www.fileplanet.com/${i}/download/index.html | grep -Eo "http.*'" | sed "s/'//")
 	
-	# download the file to the same directory as its download page HTML
-	wget -nv -a files_$1_$2.log --directory-prefix=www.fileplanet.com/${i}/download/ "${linktowget}"
+	if [ -n "${linktowget+x}" ]; then
+		# download the file to the same directory as its download page HTML
+		echo "Download link found, downloading..."
+		wget -nv -a files_$1_$2.log --directory-prefix=www.fileplanet.com/${i}/download/ "${linktowget}"
+	else
+		echo "No download link found."
+	fi
 	echo "-----"
 done
 
