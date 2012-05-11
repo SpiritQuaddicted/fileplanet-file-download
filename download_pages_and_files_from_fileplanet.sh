@@ -16,6 +16,9 @@
 echo "You will be downloading $1 to $2, you rock!"
 echo "Let's go!"
 
+mkdir "$1-$2"
+cd $1-$2/
+
 for i in $(seq $1 $2)
 do
 	echo "Trying to download $i"
@@ -39,4 +42,24 @@ do
 	echo "-----"
 done
 
-echo "Done! Contact Schbirid in #archiveteam or per mail at spirit ät quaddicted döt com"
+echo "Downloading finished! Yay!"
+
+echo -n "Counting files: "
+ls -1 www.fileplanet.com/ | wc -l
+
+echo -n "Getting the size: "
+du -hs www.fileplanet.com/
+
+echo "TARring!"
+cd ..
+tar -cf $1-$2.tar $1-$2/
+
+# just a handy local backup
+cp $1-$2/*.log logs/
+
+# This is not recommended to do automatically. The chunk might have been tiny or huge. Better check first.
+# echo "Uploading to archive.org!"
+# s3cmd --add-header x-archive-auto-make-bucket:1 --add-header "x-archive-meta-description:Files from Fileplanet (www.fileplanet.com), all files from the ID range $1 to $2." put $1-$2.tar s3://FileplanetFiles_$1-$2
+# s3cmd put $1-$2/*.log s3://FileplanetFiles_$1-$2/
+
+echo "Done. YAAAY!"
