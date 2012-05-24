@@ -59,10 +59,8 @@ cd ..
 # just a handy local backup
 cp $1-$2/*.log logs/
 
-# Uncomment the following lines if you want the script to tar automatically. Only use this if you have enough free space
-# Uncomment the end of the tar line to make it remove the directory if tar was successful
-#echo "TARring!"
-#tar -cf $1-$2.tar $1-$2/ # && rm -r $1-$2/
+echo "TARring!"
+tar -cf $1-$2.tar $1-$2/ && echo "TARring was a success. Now removing the directory." && rm -r $1-$2/
 
 grep "ERROR" logs/*$1_$2.log || echo "Done. YAAAY!"
 echo "Here is copy'n'pastable meta for the wiki:"
