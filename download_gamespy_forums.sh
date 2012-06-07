@@ -14,15 +14,18 @@ forum=$1
 
 echo "===== Mirroring http://forums.gamespy.com/${forum}/ ====="
 
+mkdir warcs
+
 mkdir ${forum}
 cd ${forum}
 
-time wget -a ${forum}.log -nv --adjust-extension --convert-links --page-requisites -np -X PrivateMessages -X Static --user-agent "Hi, I am preserving these forums for archivist/nostalgia reasons. If there is a problem, please contact spirit at quaddicted com. Thanks" http://forums.gamespy.com/${forum}/
+time wget -a ${forum}.log -nv --adjust-extension --convert-links --page-requisites -np --warc-file=../warcs/${forum}-index -X PrivateMessages -X Static --user-agent "Hi, I am preserving these forums for archivist/nostalgia reasons. If there is a problem, please contact spirit at quaddicted com. Thanks" http://forums.gamespy.com/${forum}/
 
 for url in $(grep BoardRowA forums.gamespy.com/${forum}/index.html | sed 's/.*http/http/g' | sed 's/".*//g')
 do
 	echo "=== Mirroring ${url} and all links on it (all threads of all pages) ==="
-	time wget -a ${forum}.log -nv --adjust-extension --convert-links --page-requisites -m -np -X PrivateMessages -X Static --user-agent "Hi, I am preserving these forums for archivist/nostalgia reasons. If there is a problem, please contact spirit at quaddicted com. Thanks" ${url}
+	warcfilename=$(echo "${url}" | sed 's/.*\.com\///' | sed 's/\/.*//')
+	time wget -a ${forum}.log -nv --adjust-extension --convert-links --page-requisites -m -np --warc-file=../warcs/${forum}-${warcfilename} -X PrivateMessages -X Static --user-agent "Hi, I am preserving these forums for archivist/nostalgia reasons. If there is a problem, please contact spirit at quaddicted com. Thanks" ${url}
 
 done
 
