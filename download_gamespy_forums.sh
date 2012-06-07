@@ -17,13 +17,12 @@ echo "===== Mirroring http://forums.gamespy.com/${forum}/ ====="
 mkdir ${forum}
 cd ${forum}
 
-time wget -a ${forum}.log -nv --adjust-extension --convert-links --page-requisites --tries=2 --timeout=5 -np -X PrivateMessages -X Static --user-agent "Hi, I am preserving these forums for archivist/nostalgia reasons. If there is a problem, please contact spirit at quaddicted com. Thanks" http://forums.gamespy.com/${forum}/
+time wget -a ${forum}.log -nv --adjust-extension --convert-links --page-requisites -np -X PrivateMessages -X Static --user-agent "Hi, I am preserving these forums for archivist/nostalgia reasons. If there is a problem, please contact spirit at quaddicted com. Thanks" http://forums.gamespy.com/${forum}/
 
 for url in $(grep BoardRowA forums.gamespy.com/${forum}/index.html | sed 's/.*http/http/g' | sed 's/".*//g')
 do
-	echo "=== Mirroring ${url} ==="
-	# --level=10 is more than needed, a limit is needed because some forums will be in an infinite link loop otherwise
-	time wget -a ${forum}.log -nv --adjust-extension --convert-links --page-requisites -m --level=10 --tries=2 --timeout=5 -np -X PrivateMessages -X Static --user-agent "Hi, I am preserving these forums for archivist/nostalgia reasons. If there is a problem, please contact spirit at quaddicted com. Thanks" ${url}
+	echo "=== Mirroring ${url} and all links on it (all threads of all pages) ==="
+	time wget -a ${forum}.log -nv --adjust-extension --convert-links --page-requisites -m -np -X PrivateMessages -X Static --user-agent "Hi, I am preserving these forums for archivist/nostalgia reasons. If there is a problem, please contact spirit at quaddicted com. Thanks" ${url}
 
 done
 
